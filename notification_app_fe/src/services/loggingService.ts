@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/config/api";
+import { API_BASE_URL, getAuthHeaders } from "@/config/api";
 
 export type ApiLogEntry = {
   method: string;
@@ -7,12 +7,22 @@ export type ApiLogEntry = {
   durationMs: number;
 };
 
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 /**
  * Wraps fetch calls to the backend so each request passes through
  * Express logging_middleware (server-side logs) while mirroring
  * a summary on the frontend console.
  */
-async function request<T>(
+export async function apiRequest<T>(
   path: string,
   init?: RequestInit
 ): Promise<{ data: T; log: ApiLogEntry }> {
@@ -27,7 +37,7 @@ async function request<T>(
   const response = await fetch(url, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
+      ...getAuthHeaders(),
       ...init?.headers,
     },
   });
@@ -40,7 +50,16 @@ async function request<T>(
   );
 
   if (!response.ok) {
-    throw new Error(`API ${response.status} on ${path}`);
+    let message = `API ${response.status} on ${path}`;
+    try {
+      const body = (await response.json()) as { error?: string };
+      if (body.error) {
+        message = body.error;
+      }
+    } catch {
+      // ignore parse errors
+    }
+    throw new ApiError(message, response.status);
   }
 
   const data = (await response.json()) as T;
@@ -48,22 +67,5 @@ async function request<T>(
 }
 
 export const loggingService = {
-  checkHealth: () => request<{ status: string }>("/health"),
-
-  getTopNotifications: () =>
-    request<{
-      stats: { totalReceived: number; held: number; limit: number };
-      notifications: Array<{
-        id: number;
-        type: string;
-        message: string;
-        weight: number;
-      }>;
-    }>("/notifications/top"),
-
-  pushNotification: (body: { type: string; message: string }) =>
-    request("/notifications/stream", {
-      method: "POST",
-      body: JSON.stringify(body),
-    }),
+  checkHealth: () => apiRequest<{ status: string }>("/health"),
 };
