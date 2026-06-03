@@ -13,6 +13,8 @@ Monorepo-style project with a Node.js backend for notification services.
     └── src/
         ├── index.js
         ├── priority.js
+        ├── stream.js
+        ├── demo_stream.js
         └── middleware/
             └── logging_middleware.js
 ```
