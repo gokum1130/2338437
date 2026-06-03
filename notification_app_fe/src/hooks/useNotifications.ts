@@ -5,7 +5,7 @@ import { ApiError } from "@/services/loggingService";
 import { notificationApi } from "@/services/notificationApi";
 import type {
   Notification,
-  NotificationQueryParams,
+  NotificationType,
   PaginationMeta,
 } from "@/types/notification";
 
@@ -17,7 +17,11 @@ type UseNotificationsState = {
   isAuthError: boolean;
 };
 
-export function useNotifications(params: NotificationQueryParams) {
+export function useNotifications(
+  page: number,
+  limit: number,
+  notification_type: NotificationType
+) {
   const [state, setState] = useState<UseNotificationsState>({
     notifications: [],
     pagination: null,
@@ -26,36 +30,50 @@ export function useNotifications(params: NotificationQueryParams) {
     isAuthError: false,
   });
 
-  const fetchData = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null, isAuthError: false }));
+  const fetchData = useCallback(
+    async (showLoading = true) => {
+      if (showLoading) {
+        setState((prev) => ({
+          ...prev,
+          loading: true,
+          error: null,
+          isAuthError: false,
+        }));
+      }
 
-    try {
-      const { data } = await notificationApi.fetchNotifications(params);
-      setState({
-        notifications: data.data,
-        pagination: data.pagination,
-        loading: false,
-        error: null,
-        isAuthError: false,
-      });
-    } catch (err) {
-      const isAuthError = err instanceof ApiError && err.status === 401;
-      setState({
-        notifications: [],
-        pagination: null,
-        loading: false,
-        error:
-          err instanceof Error
-            ? err.message
-            : "Failed to load notifications",
-        isAuthError,
-      });
-    }
-  }, [params]);
+      try {
+        const { data } = await notificationApi.fetchNotifications({
+          page,
+          limit,
+          notification_type,
+        });
+        setState({
+          notifications: data.data,
+          pagination: data.pagination,
+          loading: false,
+          error: null,
+          isAuthError: false,
+        });
+      } catch (err) {
+        const isAuthError = err instanceof ApiError && err.status === 401;
+        setState({
+          notifications: [],
+          pagination: null,
+          loading: false,
+          error:
+            err instanceof Error
+              ? err.message
+              : "Failed to load notifications",
+          isAuthError,
+        });
+      }
+    },
+    [page, limit, notification_type]
+  );
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 15_000);
+    fetchData(true);
+    const interval = setInterval(() => fetchData(false), 15_000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -74,7 +92,7 @@ export function useNotifications(params: NotificationQueryParams) {
       try {
         await notificationApi.markRead(id, read);
       } catch {
-        await fetchData();
+        await fetchData(false);
       }
     },
     [fetchData, updateLocalRead]
@@ -82,7 +100,7 @@ export function useNotifications(params: NotificationQueryParams) {
 
   return {
     ...state,
-    refetch: fetchData,
+    refetch: () => fetchData(true),
     markAsRead,
   };
 }

@@ -21,11 +21,7 @@ export default function AllNotificationsView() {
   const [page, setPage] = useState(1);
 
   const { notifications, pagination, loading, error, isAuthError, refetch, markAsRead } =
-    useNotifications({
-      page,
-      limit: topN,
-      notification_type: notificationType,
-    });
+    useNotifications(page, topN, notificationType);
 
   const handleTypeChange = (type: NotificationType) => {
     setNotificationType(type);

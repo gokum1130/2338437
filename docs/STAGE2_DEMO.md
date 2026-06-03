@@ -27,8 +27,20 @@ Open http://localhost:3000
 
 - `Win + Alt + R` or Xbox Game Bar (`Win + G`) → Capture → Record
 
+## Demo video file location
+
+Save your recording locally as (git-ignored):
+
+```
+docs/stage2_demo.mp4
+```
+
+Submit the video on the **evaluation portal**, or add a Drive/YouTube link in the root `README.md`. Do not commit large `.mp4` files to GitHub.
+
 ## Final push
 
 ```bash
+git add .
+git commit -m "fix(fe): prevent infinite re-fetch loop in useNotifications"
 git push origin main
 ```
