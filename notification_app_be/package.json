@@ -1,0 +1,16 @@
+{
+  "name": "notification_app_be",
+  "version": "1.0.0",
+  "description": "Backend service for the notification application",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
