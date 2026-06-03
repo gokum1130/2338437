@@ -45,5 +45,8 @@ Next.js + MUI on **http://localhost:3000**. Backend API on **http://localhost:30
 ```bash
 cd notification_app_fe
 npm install
+cp .env.example .env.local   # add NEXT_PUBLIC_ACCESS_TOKEN if backend uses auth
 npm run dev
 ```
+
+**Access token:** set `NEXT_PUBLIC_ACCESS_TOKEN` in `notification_app_fe/.env.local` (must match `ACCESS_TOKEN` in `notification_app_be/.env`). See [notification_app_fe/README.md](notification_app_fe/README.md).

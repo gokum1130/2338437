@@ -1,46 +1,52 @@
 # notification_app_fe
 
-Next.js frontend for the notification application (Stage 2).
-
-## Stack
-
-- Next.js 15 (App Router)
-- React 19
-- Material UI (MUI)
-
-## Structure
-
-```
-src/
-├── app/              # Next.js routes
-├── components/       # ThemeRegistry, BackendStatus
-├── config/           # API base URL
-├── services/         # loggingService (backend logging_middleware bridge)
-└── theme/            # MUI theme
-```
+Next.js + MUI frontend for the notification application.
 
 ## Ports
 
-| Service  | URL                      |
-|----------|--------------------------|
-| Frontend | http://localhost:3000    |
-| Backend  | http://localhost:3001    |
-
-The backend runs on **3001** so the frontend can use the default Next.js port **3000**.
+| Service  | URL                   |
+|----------|-----------------------|
+| Frontend | http://localhost:3000 |
+| Backend  | http://localhost:3001 |
 
 ## Setup
 
 ```bash
 npm install
-cp .env.example .env.local   # optional
+cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000 and use **Ping backend** to trigger `loggingService`, which calls the API and activates backend `logging_middleware`.
+## Where to enter the access token
 
-## Logging service
+Create **`notification_app_fe/.env.local`** (this file is git-ignored):
 
-`src/services/loggingService.ts` wraps all backend `fetch` calls. Each request:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_ACCESS_TOKEN=your-secret-token-here
+```
 
-1. Logs on the frontend console (`[FE Logging]`)
-2. Hits the Express API, which runs `logging_middleware` on the server
+If the backend requires auth, set the **same value** in **`notification_app_be/.env`**:
+
+```env
+ACCESS_TOKEN=your-secret-token-here
+```
+
+Leave both empty for open dev mode (no token required).
+
+## Features (Stage 2)
+
+- Responsive **All Notifications** card grid
+- Live API with pagination (`page`, `limit`) and `notification_type` filter
+- **Top n** dropdown (5 / 10 / 15 / 20)
+- Read / unread visual states (bright highlight + pulse on unread)
+- Loading skeletons, error fallback with retry
+- Auto-refresh every 15 seconds
+
+## Record demo video
+
+1. Start backend: `cd notification_app_be && npm run dev`
+2. Start frontend: `cd notification_app_fe && npm run dev`
+3. Open http://localhost:3000
+4. Windows: `Win + G` → Record screen
+5. Show filters, pagination, tap cards to toggle read/unread
