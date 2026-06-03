@@ -12,6 +12,7 @@ Monorepo-style project with a Node.js backend for notification services.
     ├── package.json
     └── src/
         ├── index.js
+        ├── priority.js
         └── middleware/
             └── logging_middleware.js
 ```
