@@ -127,21 +127,52 @@ Stage 1 delivers a **working backend prototype** with project scaffolding, core 
 3. Client calls `GET /notifications/top` and receives 4 placements, 4 results, 2 events.
 4. Logging middleware records all 16 HTTP requests (15 POST + 1 GET).
 
-### Out of Scope (Future Stages)
+### Out of Scope (Later Stages)
 
 - Database persistence (PostgreSQL, MongoDB)
 - WebSocket or SSE real-time push to clients
-- User-specific notification feeds and read/unread state
-- Authentication and rate limiting
-- Frontend UI
-- Timestamp-based tie-breaking and TTL expiry
 - Distributed stream processing (Kafka, Redis Streams)
+
+---
+
+## Stage 2
+
+Stage 2 adds the **Next.js + MUI frontend** and a **paginated notifications API**.
+
+### Frontend
+
+- Responsive card grid (`notification_app_fe`)
+- Query params: `page`, `limit`, `notification_type`
+- Top **n** selector (5 / 10 / 15 / 20)
+- Read / unread toggle with bright dynamic styling on unread cards
+- Loading skeletons, error UI with retry, 15s live refresh
+
+### API Endpoints (Stage 2)
+
+| Method | Path                         | Description                              |
+|--------|------------------------------|------------------------------------------|
+| GET    | `/notifications`               | Paginated list (`page`, `limit`, `notification_type`) |
+| PATCH  | `/notifications/:id/read`      | Set `{ "read": true \| false }`          |
+
+Protected routes accept optional `Authorization: Bearer <token>` when `ACCESS_TOKEN` is set on the backend.
+
+### Access Token
+
+| Location | Variable |
+|----------|----------|
+| Frontend | `NEXT_PUBLIC_ACCESS_TOKEN` in `notification_app_fe/.env.local` |
+| Backend  | `ACCESS_TOKEN` in `notification_app_be/.env` |
 
 ### How to Run
 
 ```bash
+# Backend (port 3001)
 cd notification_app_be
 npm install
-npm run dev          # start API server on port 3000
-npm run demo:stream  # run stream simulation with logs
+npm run dev
+
+# Frontend (port 3000)
+cd notification_app_fe
+npm install
+npm run dev
 ```

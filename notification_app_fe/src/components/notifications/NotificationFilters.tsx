@@ -5,9 +5,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
+import { NOTIFICATION_TYPE_OPTIONS, TOP_N_OPTIONS } from "@/constants/notifications";
 import type { NotificationType } from "@/types/notification";
-
-const TOP_N_OPTIONS = [5, 10, 15, 20] as const;
 
 type Props = {
   notificationType: NotificationType;
@@ -36,10 +35,11 @@ export default function NotificationFilters({
           value={notificationType}
           onChange={(e) => onTypeChange(e.target.value as NotificationType)}
         >
-          <MenuItem value="all">All types</MenuItem>
-          <MenuItem value="placement">Placement</MenuItem>
-          <MenuItem value="result">Result</MenuItem>
-          <MenuItem value="event">Event</MenuItem>
+          {NOTIFICATION_TYPE_OPTIONS.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
 
