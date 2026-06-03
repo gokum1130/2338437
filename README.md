@@ -1,6 +1,6 @@
 # Notification App
 
-Monorepo-style project with a Node.js backend for notification services.
+Monorepo-style project with a Node.js backend and Next.js frontend for notification services.
 
 ## Project Structure
 
@@ -9,7 +9,8 @@ Monorepo-style project with a Node.js backend for notification services.
 ├── .gitignore
 ├── README.md
 ├── notification_system_design.md
-└── notification_app_be/
+├── notification_app_be/
+└── notification_app_fe/
     ├── package.json
     └── src/
         ├── index.js
@@ -36,3 +37,13 @@ npm run dev
 
 - `npm start` — run the server
 - `npm run dev` — run with file watch (Node 18+)
+
+## Frontend (`notification_app_fe`)
+
+Next.js + MUI on **http://localhost:3000**. Backend API on **http://localhost:3001**.
+
+```bash
+cd notification_app_fe
+npm install
+npm run dev
+```

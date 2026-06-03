@@ -38,4 +38,4 @@ npm install
 npm run dev
 ```
 
-Health check: `GET http://localhost:3000/health`
+Health check: `GET http://localhost:3001/health` (port 3001 when frontend uses 3000)
