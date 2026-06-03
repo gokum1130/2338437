@@ -8,6 +8,7 @@ Monorepo-style project with a Node.js backend for notification services.
 .
 ├── .gitignore
 ├── README.md
+├── notification_system_design.md
 └── notification_app_be/
     ├── package.json
     └── src/
